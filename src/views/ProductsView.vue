@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
+import { VueSpinner } from 'vue3-spinners'
 import { useDebouncedRef } from '../composables/useDebouncedRef'
 
 import Search from '../components/SearchInput.vue'
@@ -9,20 +10,23 @@ import type { Product } from '@/utils/product'
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
 const products = ref<Product[]>([])
+const pageSize = ref(15)
+const total = ref(0)
 
 const fetchProducts = async () => {
   loading.value = true
   try {
-    let url = 'https://dummyjson.com/products'
+    const baseUrl = 'https://dummyjson.com/products'
+    let params = `?limit=${pageSize.value}`
 
     if (searchText.value) {
-      console.log('searchText', searchText.value)
-      url += `?q=${searchText.value}`
+      params = `/search?q=${searchText.value}&limit=${pageSize.value}`
     }
 
-    const response = await fetch(url)
+    const response = await fetch(baseUrl + params)
     const data = await response.json()
     products.value = data.products
+    total.value = data.total
   } catch (error) {
     console.error(error)
   } finally {
@@ -43,6 +47,9 @@ watch(searchText, (newValue, oldValue) => {
 
 <template>
   <main>
+    <div v-if="loading" class="loader">
+      <VueSpinner size="20" color="white" />
+    </div>
     <div class="products-header">
       <h3>Products</h3>
       <Search v-model="searchText" placeholder="Search for a product"  />
@@ -61,15 +68,22 @@ main {
   align-items: center;
   gap: 20px;
 }
-.products-header {
+.loader {
+  background-color: rgba(0,0,0, 0.3);
+  position: absolute;
   display: flex;
-  flex-direction: column;
+  width: 100%;
+  height: 100%;
   align-items: center;
-  width: 180px;
+  justify-content: center;
+  top: 0px;
+}
+.products-header {
+  width: 250px;
 }
 .products-list {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 10px;
 }
 </style>
