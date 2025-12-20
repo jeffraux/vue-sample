@@ -6,6 +6,10 @@ const props = defineProps({
     type: String,
     default: undefined,
   },
+  placeholder: {
+    type: String,
+    default: 'Search',
+  },
   error: {
     type: String
   },
@@ -33,6 +37,7 @@ const handleInput = (event: Event) => {
       name="search"
       :value="internalValue"
       @input="handleInput"
+      :placeholder="placeholder"
       :className="error ? 'error' : ''"
     />
     <p class="error-label">{{ error }}</p>
