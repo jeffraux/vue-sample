@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { VueSpinner } from 'vue3-spinners'
-import { useDebouncedRef } from '../composables/useDebouncedRef'
 
-import Search from '../components/SearchInput.vue'
-import Products from '../components/ProductTile.vue'
+import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import type { Product } from '@/utils/product'
+
+import Search from '@/components/SearchInput.vue'
+import Products from '@/components/ProductTile.vue'
+import Modal from '@/components/DefaultModal.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
@@ -13,6 +15,7 @@ const products = ref<Product[]>([])
 const stockLevelWarning = ref(10)
 const pageSize = ref(20)
 const total = ref(0)
+const showModal = ref(false)
 
 const fetchProducts = async () => {
   loading.value = true
@@ -68,10 +71,24 @@ const filteredByCategory = computed(() => {
     <div v-for="category in categories" :key="category">
       <span class="category-title">{{ category }}</span>
       <div class="products-list">
-        <Products v-for="product in filteredByCategory(category)" :key="product.id" :product="product" :stock-level-warning="stockLevelWarning" />
+        <Products
+          v-for="product in filteredByCategory(category)"
+          :key="product.id"
+          :product="product"
+          :stock-level-warning="stockLevelWarning"
+          :onClick="() => showModal = true"
+        />
       </div>
     </div>
   </main>
+
+  <Teleport to="body">
+    <Modal :show="showModal" @close="showModal = false">
+      <template #header>
+        <h3>Custom Header</h3>
+      </template>
+    </Modal>
+  </Teleport>
 </template>
 
 <style scoped>

@@ -21,8 +21,12 @@ const props = defineProps({
   },
 })
 
+const handleClick = () => {
+  props.onClick?.()
+}
+
 const defineStockLabelClass = () => {
-  return props.product.stock < props.stockLevelWarning ? 'warning' : ''
+  return props.product.stock < props.stockLevelWarning ? 'stock-warning' : 'hide'
 }
 const isDiscounted = computed(() => {
   return props.product.discountPercentage > 0
@@ -33,17 +37,25 @@ const totalPrice = computed(() => {
   }
   return props.product.price.toFixed(2)
 })
+const stockLabel = computed(() => {
+  if (props.product.stock == 0) {
+    return 'Out of stock'
+  }
+  return `${props.product.stock} item${props.product.stock > 1 ? 's' : ''} left`
+})
 </script>
 
 <template>
-  <div class="product-tile">
+  <div class="product-tile" @click="handleClick">
     <div class="product-header">
       <span class="product-category">{{ product.category }}</span>
       {{ product.title }}
     </div>
 
     <div class="product-footer">
-      <span :class="defineStockLabelClass()">Stock: {{ product.stock }}</span>
+      <div>
+        <span :class="defineStockLabelClass()">{{ stockLabel }}</span>
+      </div>
       <div class="product-price">
         <span v-if="isDiscounted" class="price-slashed">${{ product.price }}</span>
         ${{ totalPrice }}
@@ -92,7 +104,11 @@ const totalPrice = computed(() => {
     color: #606060;
     text-decoration: line-through;
   }
-  .warning {
+  .stock-warning {
     color: red;
+    font-size: 10px;
+  }
+  .hide {
+    display: none;
   }
 </style>
