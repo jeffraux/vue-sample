@@ -1,16 +1,17 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { VueSpinner } from 'vue3-spinners'
 import { useDebouncedRef } from '../composables/useDebouncedRef'
 
 import Search from '../components/SearchInput.vue'
-import ProductTile from '../components/ProductTile.vue'
+import Products from '../components/ProductTile.vue'
 import type { Product } from '@/utils/product'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
 const products = ref<Product[]>([])
-const pageSize = ref(15)
+const stockLevelWarning = ref(10)
+const pageSize = ref(20)
 const total = ref(0)
 
 const fetchProducts = async () => {
@@ -43,6 +44,15 @@ watch(searchText, (newValue, oldValue) => {
     fetchProducts()
   }
 })
+
+const categories = computed(() => {
+  const allCategories = products.value.map(product => product.category)
+  return [...new Set(allCategories)]
+})
+
+const filteredByCategory = computed(() => {
+  return (category: string) => products.value.filter(product => product.category === category)
+})
 </script>
 
 <template>
@@ -55,8 +65,11 @@ watch(searchText, (newValue, oldValue) => {
       <Search v-model="searchText" placeholder="Search for a product"  />
     </div>
 
-    <div class="products-list">
-      <ProductTile v-for="product in products" :key="product.id" :product="product" />
+    <div v-for="category in categories" :key="category">
+      <span class="category-title">{{ category }}</span>
+      <div class="products-list">
+        <Products v-for="product in filteredByCategory(category)" :key="product.id" :product="product" :stock-level-warning="stockLevelWarning" />
+      </div>
     </div>
   </main>
 </template>
@@ -83,7 +96,12 @@ main {
 }
 .products-list {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(5, 1fr);
   gap: 10px;
+}
+.category-title {
+  font-size: 14px;
+  font-weight: bold;
+  text-transform: capitalize;
 }
 </style>
