@@ -1,13 +1,25 @@
 <script setup lang="ts">
+import { onMounted, ref } from 'vue'
+
 defineProps({
-  show: Boolean
+  show: Boolean,
+  handleClose: {
+    type: Function,
+    default: () => null
+  },
+})
+
+const focus = ref<HTMLDialogElement | null>(null)
+
+onMounted(() => {
+  focus.value?.focus()
 })
 </script>
 
 <template>
   <Transition name="modal">
-    <dialog v-if="show" class="modal-mask">
-      <div class="modal-container">
+    <dialog v-if="show" class="modal-mask" @keydown.esc="handleClose()">
+      <div ref="focus" class="modal-container">
         <div class="modal-header">
           <slot name="header">default header</slot>
         </div>

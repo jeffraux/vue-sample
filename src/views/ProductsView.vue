@@ -56,6 +56,10 @@ const categories = computed(() => {
 const filteredByCategory = computed(() => {
   return (category: string) => products.value.filter(product => product.category === category)
 })
+
+const handleCloseModal = () => {
+  showModal.value = false
+}
 </script>
 
 <template>
@@ -83,7 +87,7 @@ const filteredByCategory = computed(() => {
   </main>
 
   <Teleport to="body">
-    <Modal :show="showModal" @close="showModal = false">
+    <Modal :show="showModal" @close="handleCloseModal" :handleClose="handleCloseModal">
       <template #header>
         <h3>Custom Header</h3>
       </template>
