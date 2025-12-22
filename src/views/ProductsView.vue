@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { VueSpinner } from 'vue3-spinners'
 
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
@@ -53,14 +53,14 @@ watch(searchText, (newValue, oldValue) => {
   }
 })
 
-const categories = computed(() => {
-  const allCategories = products.value.map(product => product.category)
-  return [...new Set(allCategories)]
-})
+// const categories = computed(() => {
+//   const allCategories = products.value.map(product => product.category)
+//   return [...new Set(allCategories)]
+// })
 
-const filteredByCategory = computed(() => {
-  return (category: string) => products.value.filter(product => product.category === category)
-})
+// const filteredByCategory = computed(() => {
+//   return (category: string) => products.value.filter(product => product.category === category)
+// })
 
 let previousActiveElement: HTMLElement | null = null
 const handleClickProduct = (p: Product) => {
@@ -99,21 +99,22 @@ const handleCloseStoreModal = () => {
     </div>
 
     <div class="products-list-container">
-      <div v-for="category in categories" :key="category">
-        <span class="category-title">{{ category }}</span>
-        <div class="products-list">
-          <button
-            class="btn-product"
-            :key="product.id"
-            v-for="product in filteredByCategory(category)"
-            @click="handleClickProduct(product)"
-          >
-            <ProductTile
-              :product="product"
-              :stock-level-warning="stockLevelWarning"
-            />
-          </button>
-        </div>
+      <!-- <div v-for="category in categories" :key="category">
+        <h4 class="category-title">{{ category }}</h4>
+      </div> -->
+      <div v-if="products.length == 0" class="products-empty">No products available.</div>
+      <div v-else class="products-list">
+        <button
+          class="btn-product"
+          :key="product.id"
+          v-for="product in products"
+          @click="handleClickProduct(product)"
+        >
+          <ProductTile
+            :product="product"
+            :stock-level-warning="stockLevelWarning"
+          />
+        </button>
       </div>
     </div>
   </main>
@@ -168,9 +169,19 @@ main {
   grid-template-columns: repeat(5, 1fr);
   gap: 10px;
 }
+.products-empty {
+  display: flex;
+  min-height: 200px;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 14px;
+  color: #d7d7d7;
+}
 .category-title {
   font-size: 14px;
   font-weight: bold;
   text-transform: capitalize;
+  margin: 16px 0 8px 0;
 }
 </style>

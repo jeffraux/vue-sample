@@ -48,18 +48,25 @@ const stockLabel = computed(() => {
 
 <template>
   <div class="product-tile" @click="handleClick">
+    <div class="product-thumbnail">
+      <img :src="product.thumbnail" class="product-image" :alt="product.title" />
+      <!-- <picture>
+        <source :srcset="product.thumbnail" type="image/webp">
+      </picture> -->
+    </div>
     <div class="product-header">
       <span class="product-category">{{ product.category }}</span>
-      {{ product.title }}
+      <span class="product-title">
+        {{ product.title }}
+      </span>
     </div>
-
     <div class="product-footer">
-      <div>
-        <span :class="defineStockLabelClass()">{{ stockLabel }}</span>
-      </div>
       <div class="product-price">
         <span v-if="isDiscounted" class="price-slashed">${{ product.price }}</span>
         ${{ totalPrice }}
+      </div>
+      <div>
+        <span :class="defineStockLabelClass()">{{ stockLabel }}</span>
       </div>
     </div>
   </div>
@@ -78,6 +85,15 @@ const stockLabel = computed(() => {
     color: #181818;
     min-height: 130px;
     width: 170px;
+    height: 100%;
+  }
+  .product-thumbnail {
+    border-radius: 4px 4px 0 0;
+    overflow: hidden;
+  }
+  .product-image {
+    height: 100px;
+    object-fit: cover;
   }
   .product-tile:focus {
     outline: invert;
@@ -101,10 +117,20 @@ const stockLabel = computed(() => {
     align-items: flex-end;
     justify-content: space-between;
   }
+  .product-title {
+    min-height: 32px;
+    margin-bottom: 8px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* number of lines to show */
+    line-clamp: 2; /* standard property, but not fully supported yet */
+    -webkit-box-orient: vertical;
+  }
   .product-price {
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
+    align-items: flex-start;
   }
   .price-slashed {
     font-size: 10px;
