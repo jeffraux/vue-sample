@@ -9,6 +9,7 @@ import Search from '@/components/SearchInput.vue'
 import Products from '@/components/Product/ProductTile.vue'
 import ProductDetails from '@/components/Product/ProductInfo.vue'
 import Modal from '@/components/DefaultModal.vue'
+import Button from '@/components/ButtonBadge.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
@@ -99,6 +100,10 @@ const handleCloseModal = () => {
       </template> -->
       <template #body>
         <ProductDetails v-if="productInfo" :product="productInfo" />
+      </template>
+      <template #footer>
+        <Button btnLabel="Check Availability" variant="primary" @click="handleCloseModal" />
+        <Button btnLabel="OK" @click="handleCloseModal" />
       </template>
     </Modal>
   </Teleport>

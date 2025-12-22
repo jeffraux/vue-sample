@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { ref, watch } from 'vue'
+import Button from './ButtonBadge.vue'
 
 defineProps({
   show: Boolean,
@@ -7,15 +8,15 @@ defineProps({
 
 const focus = ref<HTMLDialogElement | null>(null)
 
-onMounted(() => {
+watch(focus, () => {
   focus.value?.focus()
 })
 </script>
 
 <template>
   <Transition name="modal">
-    <dialog v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
-      <div ref="focus" class="modal-container">
+    <dialog ref="focus" v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
+      <div class="modal-container">
         <!-- <div class="modal-header">
           <slot name="header">Default header</slot>
         </div> -->
@@ -24,11 +25,7 @@ onMounted(() => {
         </div>
         <div class="modal-footer">
           <slot name="footer">
-            <!-- Default footer -->
-            <button
-              class="modal-default-button"
-              @click="$emit('close')"
-            >OK</button>
+            <Button class="modal-default-button" btnLabel="OK" @click="$emit('close')" />
           </slot>
         </div>
       </div>
@@ -47,6 +44,7 @@ onMounted(() => {
   background-color: rgba(0, 0, 0, 0.5);
   display: flex;
   transition: opacity 0.3s ease;
+  outline: none;
 }
 .modal-container {
   width: 300px;
@@ -66,6 +64,12 @@ onMounted(() => {
 }
 .modal-default-button {
   float: right;
+}
+.modal-footer {
+  display: flex;
+  flex-direction: row;
+  gap: 4px;
+  justify-content: flex-end;
 }
 .modal-enter-from {
   opacity: 0;
