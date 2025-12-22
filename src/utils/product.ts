@@ -7,4 +7,6 @@ export interface Product {
   price: number
   stock: number
   brand: string
+  images: string[]
+  thumbnail: string
 }

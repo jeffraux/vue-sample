@@ -16,7 +16,7 @@ const props = defineProps({
 })
 
 const defineStockLabelClass = () => {
-  return props.product.stock < props.stockLevelWarning ? 'stock-warning' : 'hide'
+  return props.product.stock < props.stockLevelWarning ? 'stock-label-warning' : 'stock-label'
 }
 const isDiscounted = computed(() => {
   return props.product.discountPercentage > 0
@@ -37,8 +37,12 @@ const stockLabel = computed(() => {
 
 <template>
   <div class="product-header">
-    <span class="product-category">{{ product.category }}</span>
+    <span class="product-category">{{ product.category }} · {{ product.brand }}</span>
     {{ product.title }}
+  </div>
+
+  <div class="product-info">
+    <p>{{ product.description }}</p>
   </div>
 
   <div class="product-footer">
@@ -63,6 +67,10 @@ const stockLabel = computed(() => {
     color: #414141;
     text-transform: capitalize;
   }
+  .product-info p {
+    font-size: 12px;
+    margin: 8px 0 16px;
+  }
   .product-footer {
     display: flex;
     flex-direction: row;
@@ -79,7 +87,11 @@ const stockLabel = computed(() => {
     color: #606060;
     text-decoration: line-through;
   }
-  .stock-warning {
+  .stock-label {
+    color: #606060;
+    font-size: 10px;
+  }
+  .stock-label-warning {
     color: red;
     font-size: 10px;
   }

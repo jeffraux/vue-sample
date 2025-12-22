@@ -79,6 +79,9 @@ const stockLabel = computed(() => {
     min-height: 130px;
     width: 170px;
   }
+  .product-tile:focus {
+    outline: invert;
+  }
   .product-header {
     display: flex;
     flex-direction: column;

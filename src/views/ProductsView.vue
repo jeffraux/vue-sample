@@ -7,9 +7,7 @@ import type { Product } from '@/utils/product'
 
 import Search from '@/components/SearchInput.vue'
 import Products from '@/components/Product/ProductTile.vue'
-import ProductDetails from '@/components/Product/ProductInfo.vue'
-import Modal from '@/components/DefaultModal.vue'
-import Button from '@/components/ButtonBadge.vue'
+import ProductModal from '@/components/Product/ProductModal.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
@@ -93,20 +91,11 @@ const handleCloseModal = () => {
     </div>
   </main>
 
-  <Teleport to="body">
-    <Modal :show="showModal" @close="handleCloseModal">
-      <!-- <template #header>
-        <h3>{{ productInfo?.title }}</h3>
-      </template> -->
-      <template #body>
-        <ProductDetails v-if="productInfo" :product="productInfo" />
-      </template>
-      <template #footer>
-        <Button btnLabel="Check Availability" variant="primary" @click="handleCloseModal" />
-        <Button btnLabel="OK" @click="handleCloseModal" />
-      </template>
-    </Modal>
-  </Teleport>
+  <ProductModal
+    :show="showModal"
+    :product="productInfo || undefined"
+    @close="handleCloseModal"
+  />
 </template>
 
 <style scoped>

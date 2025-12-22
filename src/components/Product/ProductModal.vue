@@ -1,10 +1,21 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
-import Button from './ButtonBadge.vue'
+import { type PropType, ref, watch } from 'vue'
+import type { Product } from '@/utils/product'
+
+import Button from '../ButtonBadge.vue'
+import ProductInfo from './ProductInfo.vue'
 
 defineProps({
   show: Boolean,
+  handleClose: {
+    type: Function,
+    default: () => null,
+  },
+  product: {
+    type: Object as PropType<Product>
+  },
 })
+defineEmits(['close'])
 
 const focus = ref<HTMLDialogElement | null>(null)
 
@@ -14,27 +25,25 @@ watch(focus, () => {
 </script>
 
 <template>
-  <Transition name="modal">
-    <dialog ref="focus" v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
-      <div class="modal-container">
-        <!-- <div class="modal-header">
-          <slot name="header">Default header</slot>
-        </div> -->
-        <div class="modal-body">
-          <slot name="body">Default body</slot>
+  <Teleport to="body">
+    <Transition name="modal">
+      <dialog ref="focus" v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
+        <div class="modal-container">
+          <div class="modal-body">
+            <ProductInfo v-if="product" :product="product" />
+          </div>
+          <div class="modal-footer">
+            <Button btnLabel="Check Availability" variant="primary" @click="$emit('close')" />
+            <Button btnLabel="OK" @click="$emit('close')" />
+          </div>
         </div>
-        <div class="modal-footer">
-          <slot name="footer">
-            <Button class="modal-default-button" btnLabel="OK" @click="$emit('close')" />
-          </slot>
-        </div>
-      </div>
-    </dialog>
-  </Transition>
+      </dialog>
+    </Transition>
+  </Teleport>
 </template>
 
-<style>
-.modal-mask {
+<style scoped>
+  .modal-mask {
   position: fixed;
   z-index: 9998;
   top: 0;
@@ -47,7 +56,7 @@ watch(focus, () => {
   outline: none;
 }
 .modal-container {
-  width: 300px;
+  width: 450px;
   margin: auto;
   padding: 16px;
   background-color: #fff;
