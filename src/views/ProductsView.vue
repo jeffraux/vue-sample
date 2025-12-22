@@ -98,20 +98,22 @@ const handleCloseStoreModal = () => {
       <Search v-model="searchText" placeholder="Search for a product"  />
     </div>
 
-    <div v-for="category in categories" :key="category">
-      <span class="category-title">{{ category }}</span>
-      <div class="products-list">
-        <button
-          class="btn-product"
-          :key="product.id"
-          v-for="product in filteredByCategory(category)"
-          @click="handleClickProduct(product)"
-        >
-          <ProductTile
-            :product="product"
-            :stock-level-warning="stockLevelWarning"
-          />
-        </button>
+    <div class="products-list-container">
+      <div v-for="category in categories" :key="category">
+        <span class="category-title">{{ category }}</span>
+        <div class="products-list">
+          <button
+            class="btn-product"
+            :key="product.id"
+            v-for="product in filteredByCategory(category)"
+            @click="handleClickProduct(product)"
+          >
+            <ProductTile
+              :product="product"
+              :stock-level-warning="stockLevelWarning"
+            />
+          </button>
+        </div>
       </div>
     </div>
   </main>
@@ -146,6 +148,9 @@ main {
   justify-content: center;
   top: 0px;
 }
+.products-list-container {
+  min-height: 620px;
+}
 .btn-product {
   padding: 0;
   margin: 0;
@@ -153,7 +158,7 @@ main {
   border-radius: 4px;
 }
 .btn-product:focus {
-  outline: 1px solid #2a8eff;
+  outline: 2px solid #2a8eff;
 }
 .products-header {
   width: 250px;
