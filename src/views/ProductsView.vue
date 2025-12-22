@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { VueSpinner } from 'vue3-spinners'
 
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
@@ -19,15 +19,8 @@ const pageSize = ref(20)
 const total = ref(0)
 const showProductModal = ref(false)
 const showStoreModal = ref(false)
-const buttonRefs = ref<HTMLElement[]>([])
 const btnReturnRef = ref<HTMLElement | null>(null)
 const savedIndex = ref(0)
-
-const setButtonRef = (el: HTMLElement) => {
-  if (el) {
-    buttonRefs.value.push(el);
-  }
-}
 
 const fetchProducts = async () => {
   loading.value = true
@@ -69,16 +62,20 @@ const filteredByCategory = computed(() => {
   return (category: string) => products.value.filter(product => product.category === category)
 })
 
+let previousActiveElement: HTMLElement | null = null
 const handleClickProduct = (p: Product) => {
+  previousActiveElement = document.activeElement as HTMLElement
   showProductModal.value = true
   productInfo.value = p
   savedIndex.value = products.value.findIndex(product => product.id === p.id)
 }
 const handleCloseProductModal = () => {
   showProductModal.value = false
-  if (buttonRefs.value && buttonRefs.value.length > 0 && buttonRefs.value[savedIndex.value]) {
-    buttonRefs.value[savedIndex.value]?.focus()
-  }
+  nextTick(() => {
+    if (previousActiveElement) {
+      previousActiveElement.focus();
+    }
+  })
 }
 const handleOpenStoreModal = (btnRef: HTMLElement) => {
   showStoreModal.value = true
@@ -105,7 +102,6 @@ const handleCloseStoreModal = () => {
       <span class="category-title">{{ category }}</span>
       <div class="products-list">
         <button
-          :ref="setButtonRef"
           class="btn-product"
           :key="product.id"
           v-for="product in filteredByCategory(category)"

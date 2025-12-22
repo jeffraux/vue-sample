@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type PropType, ref, watch, useTemplateRef } from 'vue'
+import { type PropType, ref, watch } from 'vue'
 import type { Product } from '@/utils/product'
 
 import Button from '../ButtonBadge.vue'
@@ -19,10 +19,15 @@ defineProps({
     default: () => null,
   },
 })
-defineEmits(['close', 'openStoreModal'])
+const emit = defineEmits(['close', 'openStoreModal'])
 
 const focus = ref<HTMLDialogElement | null>(null)
-const btnRef = useTemplateRef('btnRef')
+let previousActiveElement: HTMLElement | null = null
+
+const handleCheckStore = () => {
+  previousActiveElement = document.activeElement as HTMLElement
+  emit('openStoreModal', previousActiveElement)
+}
 
 watch(focus, () => {
   focus.value?.focus()
@@ -38,7 +43,7 @@ watch(focus, () => {
             <ProductInfo v-if="product" :product="product" />
           </div>
           <div class="modal-footer">
-            <Button ref="btnRef" btnLabel="Check Availability" variant="primary" @click="$emit('openStoreModal', btnRef)" />
+            <Button btnLabel="Check Availability" variant="primary" @click="handleCheckStore" />
             <Button btnLabel="OK" @click="$emit('close')" />
           </div>
         </div>
