@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { type PropType, ref, watch, useTemplateRef } from 'vue'
+import { type PropType, ref, watch } from 'vue'
 import type { Product } from '@/utils/product'
 
 import Button from '../ButtonBadge.vue'
-import ProductInfo from './ProductInfo.vue'
+// import ProductInfo from './ProductInfo.vue'
 
 defineProps({
   show: Boolean,
@@ -14,32 +14,30 @@ defineProps({
   product: {
     type: Object as PropType<Product>
   },
-  openStoreModal: {
-    type: Function,
-    default: () => null,
-  },
 })
-defineEmits(['close', 'openStoreModal'])
+defineEmits(['close'])
 
-const focus = ref<HTMLDialogElement | null>(null)
-const btnRef = useTemplateRef('btnRef')
+const inputRef = ref<HTMLElement | null>(null)
 
-watch(focus, () => {
-  focus.value?.focus()
+watch(inputRef, () => {
+  inputRef.value?.focus()
 })
 </script>
 
 <template>
   <Teleport to="body">
     <Transition name="modal">
-      <dialog ref="focus" v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
+      <dialog v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
         <div class="modal-container">
+          <div class="modal-header">
+            <h3>Check Store Availability</h3>
+          </div>
           <div class="modal-body">
-            <ProductInfo v-if="product" :product="product" />
+            test input: <input ref="inputRef" name="pin" maxlength="4" />
           </div>
           <div class="modal-footer">
-            <Button ref="btnRef" btnLabel="Check Availability" variant="primary" @click="$emit('openStoreModal', btnRef)" />
-            <Button btnLabel="OK" @click="$emit('close')" />
+            <Button btnLabel="Check" variant="primary" @click="$emit('close')" />
+            <Button btnLabel="Cancel" @click="$emit('close')" />
           </div>
         </div>
       </dialog>
@@ -48,9 +46,9 @@ watch(focus, () => {
 </template>
 
 <style scoped>
-  .modal-mask {
+.modal-mask {
   position: fixed;
-  z-index: 9998;
+  z-index: 9999;
   top: 0;
   left: 0;
   width: 100%;
@@ -61,7 +59,7 @@ watch(focus, () => {
   outline: none;
 }
 .modal-container {
-  width: 450px;
+  width: 400px;
   margin: auto;
   padding: 16px;
   background-color: #fff;
@@ -71,7 +69,8 @@ watch(focus, () => {
 }
 .modal-header h3 {
   margin-top: 0;
-  color: #42b983;
+  color: #000;
+  font-weight: 500;
 }
 .modal-body {
   margin: 0 0 20px 0;

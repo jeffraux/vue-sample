@@ -85,12 +85,15 @@ const stockLabel = computed(() => {
   .product-header {
     display: flex;
     flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
   }
   .product-category {
     opacity: 1;
     font-size: 10px;
     color: #414141;
     text-transform: capitalize;
+    margin-bottom: 4px;
   }
   .product-footer {
     display: flex;

@@ -8,6 +8,7 @@ import type { Product } from '@/utils/product'
 import Search from '@/components/SearchInput.vue'
 import ProductTile from '@/components/Product/ProductTile.vue'
 import ProductModal from '@/components/Product/ProductModal.vue'
+import StoreModal from '@/components/Product/StoreModal.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
@@ -16,8 +17,10 @@ const productInfo = ref<Product | null>(null)
 const stockLevelWarning = ref(10)
 const pageSize = ref(20)
 const total = ref(0)
-const showModal = ref(false)
+const showProductModal = ref(false)
+const showStoreModal = ref(false)
 const buttonRefs = ref<HTMLElement[]>([])
+const btnReturnRef = ref<HTMLElement | null>(null)
 const savedIndex = ref(0)
 
 const setButtonRef = (el: HTMLElement) => {
@@ -67,15 +70,24 @@ const filteredByCategory = computed(() => {
 })
 
 const handleClickProduct = (p: Product) => {
-  showModal.value = true
+  showProductModal.value = true
   productInfo.value = p
   savedIndex.value = products.value.findIndex(product => product.id === p.id)
 }
-const handleCloseModal = () => {
-  showModal.value = false
+const handleCloseProductModal = () => {
+  showProductModal.value = false
   if (buttonRefs.value && buttonRefs.value.length > 0 && buttonRefs.value[savedIndex.value]) {
     buttonRefs.value[savedIndex.value]?.focus()
   }
+}
+const handleOpenStoreModal = (btnRef: HTMLElement) => {
+  showStoreModal.value = true
+  console.log('btnRef', btnRef.textContent)
+  btnReturnRef.value = btnRef
+}
+const handleCloseStoreModal = () => {
+  showStoreModal.value = false
+  btnReturnRef.value?.focus()
 }
 </script>
 
@@ -109,9 +121,15 @@ const handleCloseModal = () => {
   </main>
 
   <ProductModal
-    :show="showModal"
+    :show="showProductModal"
     :product="productInfo || undefined"
-    @close="handleCloseModal"
+    @close="handleCloseProductModal"
+    @open-store-modal="handleOpenStoreModal"
+  />
+  <StoreModal
+    :show="showStoreModal"
+    :product="productInfo || undefined"
+    @close="handleCloseStoreModal"
   />
 </template>
 
