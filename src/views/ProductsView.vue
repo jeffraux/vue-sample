@@ -6,7 +6,7 @@ import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import type { Product } from '@/utils/product'
 
 import Search from '@/components/SearchInput.vue'
-import Products from '@/components/Product/ProductTile.vue'
+import ProductTile from '@/components/Product/ProductTile.vue'
 import ProductModal from '@/components/Product/ProductModal.vue'
 
 const searchText = useDebouncedRef('', 500)
@@ -17,6 +17,14 @@ const stockLevelWarning = ref(10)
 const pageSize = ref(20)
 const total = ref(0)
 const showModal = ref(false)
+const buttonRefs = ref<HTMLElement[]>([])
+const savedIndex = ref(0)
+
+const setButtonRef = (el: HTMLElement) => {
+  if (el) {
+    buttonRefs.value.push(el);
+  }
+}
 
 const fetchProducts = async () => {
   loading.value = true
@@ -61,9 +69,13 @@ const filteredByCategory = computed(() => {
 const handleClickProduct = (p: Product) => {
   showModal.value = true
   productInfo.value = p
+  savedIndex.value = products.value.findIndex(product => product.id === p.id)
 }
 const handleCloseModal = () => {
   showModal.value = false
+  if (buttonRefs.value && buttonRefs.value.length > 0 && buttonRefs.value[savedIndex.value]) {
+    buttonRefs.value[savedIndex.value]?.focus()
+  }
 }
 </script>
 
@@ -80,13 +92,18 @@ const handleCloseModal = () => {
     <div v-for="category in categories" :key="category">
       <span class="category-title">{{ category }}</span>
       <div class="products-list">
-        <Products
-          v-for="product in filteredByCategory(category)"
+        <button
+          :ref="setButtonRef"
+          class="btn-product"
           :key="product.id"
-          :product="product"
-          :stock-level-warning="stockLevelWarning"
-          :onClick="() => handleClickProduct(product)"
-        />
+          v-for="product in filteredByCategory(category)"
+          @click="handleClickProduct(product)"
+        >
+          <ProductTile
+            :product="product"
+            :stock-level-warning="stockLevelWarning"
+          />
+        </button>
       </div>
     </div>
   </main>
@@ -114,6 +131,15 @@ main {
   align-items: center;
   justify-content: center;
   top: 0px;
+}
+.btn-product {
+  padding: 0;
+  margin: 0;
+  border: none;
+  border-radius: 4px;
+}
+.btn-product:focus {
+  outline: 1px solid #2a8eff;
 }
 .products-header {
   width: 250px;
