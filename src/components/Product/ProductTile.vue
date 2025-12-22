@@ -11,6 +11,7 @@ const props = defineProps({
   },
   onClick: {
     type: Function,
+    default: () => null,
   },
   loading: {
     type: Boolean,

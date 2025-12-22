@@ -6,12 +6,14 @@ import { useDebouncedRef } from '@/composables/useDebouncedRef'
 import type { Product } from '@/utils/product'
 
 import Search from '@/components/SearchInput.vue'
-import Products from '@/components/ProductTile.vue'
+import Products from '@/components/Product/ProductTile.vue'
+import ProductDetails from '@/components/Product/ProductInfo.vue'
 import Modal from '@/components/DefaultModal.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
 const products = ref<Product[]>([])
+const productInfo = ref<Product | null>(null)
 const stockLevelWarning = ref(10)
 const pageSize = ref(20)
 const total = ref(0)
@@ -57,6 +59,10 @@ const filteredByCategory = computed(() => {
   return (category: string) => products.value.filter(product => product.category === category)
 })
 
+const handleClickProduct = (p: Product) => {
+  showModal.value = true
+  productInfo.value = p
+}
 const handleCloseModal = () => {
   showModal.value = false
 }
@@ -80,16 +86,19 @@ const handleCloseModal = () => {
           :key="product.id"
           :product="product"
           :stock-level-warning="stockLevelWarning"
-          :onClick="() => showModal = true"
+          :onClick="() => handleClickProduct(product)"
         />
       </div>
     </div>
   </main>
 
   <Teleport to="body">
-    <Modal :show="showModal" @close="handleCloseModal" :handleClose="handleCloseModal">
-      <template #header>
-        <h3>Custom Header</h3>
+    <Modal :show="showModal" @close="handleCloseModal">
+      <!-- <template #header>
+        <h3>{{ productInfo?.title }}</h3>
+      </template> -->
+      <template #body>
+        <ProductDetails v-if="productInfo" :product="productInfo" />
       </template>
     </Modal>
   </Teleport>

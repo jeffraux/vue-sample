@@ -3,10 +3,6 @@ import { onMounted, ref } from 'vue'
 
 defineProps({
   show: Boolean,
-  handleClose: {
-    type: Function,
-    default: () => null
-  },
 })
 
 const focus = ref<HTMLDialogElement | null>(null)
@@ -18,19 +14,17 @@ onMounted(() => {
 
 <template>
   <Transition name="modal">
-    <dialog v-if="show" class="modal-mask" @keydown.esc="handleClose()">
+    <dialog v-if="show" class="modal-mask" @keydown.esc="$emit('close')">
       <div ref="focus" class="modal-container">
-        <div class="modal-header">
-          <slot name="header">default header</slot>
-        </div>
-
+        <!-- <div class="modal-header">
+          <slot name="header">Default header</slot>
+        </div> -->
         <div class="modal-body">
-          <slot name="body">default body</slot>
+          <slot name="body">Default body</slot>
         </div>
-
         <div class="modal-footer">
           <slot name="footer">
-            default footer
+            <!-- Default footer -->
             <button
               class="modal-default-button"
               @click="$emit('close')"
@@ -54,47 +48,31 @@ onMounted(() => {
   display: flex;
   transition: opacity 0.3s ease;
 }
-
 .modal-container {
   width: 300px;
   margin: auto;
-  padding: 20px 30px;
+  padding: 16px;
   background-color: #fff;
-  border-radius: 2px;
+  border-radius: 4px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
 }
-
 .modal-header h3 {
   margin-top: 0;
   color: #42b983;
 }
-
 .modal-body {
-  margin: 20px 0;
+  margin: 0 0 20px 0;
 }
-
 .modal-default-button {
   float: right;
 }
-
-/*
-  * The following styles are auto-applied to elements with
-  * transition="modal" when their visibility is toggled
-  * by Vue.js.
-  *
-  * You can easily play with the modal transition by editing
-  * these styles.
-  */
-
 .modal-enter-from {
   opacity: 0;
 }
-
 .modal-leave-to {
   opacity: 0;
 }
-
 .modal-enter-from .modal-container,
 .modal-leave-to .modal-container {
   -webkit-transform: scale(1.1);
