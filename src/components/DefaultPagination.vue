@@ -11,7 +11,7 @@ const props = defineProps<{
 const emit = defineEmits(['fetchData'])
 
 const handleChangePage = (pageIndex?: number) => {
-  emit('fetchData', pageIndex)
+  emit('fetchData', false, pageIndex)
 }
 
 const totalPages = computed(() => {

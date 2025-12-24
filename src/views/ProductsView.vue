@@ -25,7 +25,7 @@ const showStoreModal = ref(false)
 const btnReturnRef = ref<HTMLElement | null>(null)
 const savedIndex = ref(0)
 
-const fetchProducts = async (newPageIndex?: number) => {
+const fetchProducts = async (reinitialize?: boolean, newPageIndex?: number) => {
   loading.value = true
   pageIndex.value = newPageIndex || 0
 
@@ -34,8 +34,8 @@ const fetchProducts = async (newPageIndex?: number) => {
     let params = `?limit=${pageSize.value}&skip=${(newPageIndex || 0) * pageSize.value}`
 
     if (searchText.value) {
-      pageIndex.value = 0
-      params = `/search?q=${searchText.value}&limit=${pageSize.value}`
+      if (reinitialize) pageIndex.value = 0
+      params = `/search?q=${searchText.value}&limit=${pageSize.value}&skip=${(newPageIndex || 0) * pageSize.value}`
     }
 
     const response = await fetch(baseUrl + params)
@@ -50,12 +50,12 @@ const fetchProducts = async (newPageIndex?: number) => {
 }
 
 onMounted(() => {
-  fetchProducts()
+  fetchProducts(true)
 })
 
 watch(searchText, (newValue, oldValue) => {
   if (newValue !== oldValue) {
-    fetchProducts()
+    fetchProducts(true)
   }
 })
 
