@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch, computed } from 'vue'
+import { nextTick, onMounted, ref, watch } from 'vue'
 import { VueSpinner } from 'vue3-spinners'
 
 import { useDebouncedRef } from '@/composables/useDebouncedRef'
@@ -9,7 +9,8 @@ import Search from '@/components/SearchInput.vue'
 import ProductTile from '@/components/Product/ProductTile.vue'
 import ProductModal from '@/components/Product/ProductModal.vue'
 import StoreModal from '@/components/Product/StoreModal.vue'
-import Button from '@/components/ButtonBadge.vue'
+// import Button from '@/components/ButtonBadge.vue'
+import Pagination from '@/components/DefaultPagination.vue'
 
 const searchText = useDebouncedRef('', 500)
 const loading = ref(false)
@@ -24,11 +25,13 @@ const showStoreModal = ref(false)
 const btnReturnRef = ref<HTMLElement | null>(null)
 const savedIndex = ref(0)
 
-const fetchProducts = async () => {
+const fetchProducts = async (newPageIndex?: number) => {
   loading.value = true
+  pageIndex.value = newPageIndex || 0
+
   try {
     const baseUrl = 'https://dummyjson.com/products'
-    let params = `?limit=${pageSize.value}&skip=${pageIndex.value * pageSize.value}`
+    let params = `?limit=${pageSize.value}&skip=${(newPageIndex || 0) * pageSize.value}`
 
     if (searchText.value) {
       pageIndex.value = 0
@@ -45,12 +48,6 @@ const fetchProducts = async () => {
     loading.value = false
   }
 }
-
-const totalPages = computed(() => {
-  const pages = Math.ceil(total.value / pageSize.value)
-  const arr = Array.from({ length: pages }, (_, index) => index)
-  return arr
-})
 
 onMounted(() => {
   fetchProducts()
@@ -90,7 +87,6 @@ const handleCloseProductModal = () => {
 
 const handleOpenStoreModal = (btnRef: HTMLElement) => {
   showStoreModal.value = true
-  console.log('btnRef', btnRef.textContent)
   btnReturnRef.value = btnRef
 }
 
@@ -130,28 +126,7 @@ const handleCloseStoreModal = () => {
       </div>
     </div>
 
-    <div class="pagination">
-      <div class="pagination-arrow">
-        <Button
-          v-if="pageIndex != 0"
-          btnLabel="«"
-          variant="default"
-        />
-      </div>
-      <Button
-        v-for="page in totalPages"
-        :key="page"
-        :btnLabel="`${page + 1}`"
-        :variant="pageIndex == page ? 'primary' : 'default'"
-      />
-      <div class="pagination-arrow">
-        <Button
-          v-if="pageIndex != totalPages.length"
-          btnLabel="»"
-          variant="default"
-        />
-      </div>
-    </div>
+    <Pagination :page-index="pageIndex" :page-size="pageSize" :total="total" @fetch-data="fetchProducts" />
   </main>
 
   <ProductModal
@@ -218,15 +193,5 @@ main {
   font-weight: bold;
   text-transform: capitalize;
   margin: 16px 0 8px 0;
-}
-.pagination {
-  display: flex;
-  flex-direction: row;
-  gap: 6px;
-  margin-top: 8px;
-}
-.pagination-arrow {
-  width: 31.5px;
-  height: 31.5px;
 }
 </style>
