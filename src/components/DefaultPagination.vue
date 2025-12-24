@@ -35,6 +35,7 @@ const showNextButton = computed(() => {
         v-if="showPrevButton"
         btnLabel="❮"
         variant="default"
+        @click="handleChangePage(pageIndex - 1)"
       />
     </div>
     <Button
@@ -49,6 +50,7 @@ const showNextButton = computed(() => {
         v-if="showNextButton"
         btnLabel="❯"
         variant="default"
+        @click="handleChangePage(pageIndex + 1)"
       />
     </div>
   </div>

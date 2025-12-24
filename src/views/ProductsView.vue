@@ -98,15 +98,15 @@ const handleCloseStoreModal = () => {
 
 <template>
   <main>
-    <div v-if="loading" class="loader">
-      <VueSpinner size="20" color="white" />
-    </div>
     <div class="products-header">
       <h3>Products</h3>
       <Search v-model="searchText" placeholder="Search for a product"  />
     </div>
 
     <div class="products-list-container">
+      <div v-if="loading" class="loader">
+        <VueSpinner size="20" color="white" />
+      </div>
       <!-- <div v-for="category in categories" :key="category">
         <h4 class="category-title">{{ category }}</h4>
       </div> -->
@@ -126,7 +126,13 @@ const handleCloseStoreModal = () => {
       </div>
     </div>
 
-    <Pagination :page-index="pageIndex" :page-size="pageSize" :total="total" @fetch-data="fetchProducts" />
+    <Pagination
+      v-if="products.length !== 0"
+      :page-index="pageIndex"
+      :page-size="pageSize"
+      :total="total"
+      @fetch-data="fetchProducts"
+    />
   </main>
 
   <ProductModal
@@ -157,10 +163,11 @@ main {
   height: 100%;
   align-items: center;
   justify-content: center;
-  top: 0px;
 }
 .products-list-container {
-  min-height: 620px;
+  min-height: 570px;
+  min-width: 890px;
+  position: relative;
 }
 .btn-product {
   padding: 0;
