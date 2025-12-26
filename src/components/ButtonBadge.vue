@@ -7,12 +7,10 @@ const props = defineProps({
   },
   variant: {
     type: String,
+    default: 'default',
     validator(value: string) {
-      return ['primary', 'secondary', 'danger'].includes(value)
+      return ['primary', 'secondary', 'danger', 'default'].includes(value)
     }
-  },
-  onClick: {
-    type: Function,
   },
   loading: {
     type: Boolean,
@@ -22,17 +20,10 @@ const props = defineProps({
 const variantClass = computed(() => {
   return `btn-${props.variant}`
 })
-
-const handleClick = () => {
-  props.onClick?.()
-}
 </script>
 
 <template>
-  <button
-    :class="['btn', variantClass]"
-    @click="handleClick"
-  >
+  <button :class="['btn', variantClass]">
     <div v-if="loading">
       <VueSpinner size="14" color="white" />
     </div>

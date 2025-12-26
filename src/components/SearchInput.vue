@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import { ref, watch } from 'vue'
+import { computed, ref, watch } from 'vue'
 
 const props = defineProps({
   modelValue: {
     type: String,
     default: undefined,
+  },
+  placeholder: {
+    type: String,
+    default: 'Search',
   },
   error: {
     type: String
@@ -25,6 +29,10 @@ const handleInput = (event: Event) => {
   internalValue.value = target.value
   emit('update:modelValue', target.value)
 }
+
+const handleErrorClass = computed(() => {
+  return props.error ? 'error' : ''
+})
 </script>
 
 <template>
@@ -33,7 +41,8 @@ const handleInput = (event: Event) => {
       name="search"
       :value="internalValue"
       @input="handleInput"
-      :className="error ? 'error' : ''"
+      :placeholder="placeholder"
+      :className="handleErrorClass"
     />
     <p class="error-label">{{ error }}</p>
   </div>
@@ -47,6 +56,7 @@ input {
   border: 1px solid #FFF;
   outline: none;
   width: 100%;
+  font-size: 14px;
 }
 input:focus {
   outline: none;
