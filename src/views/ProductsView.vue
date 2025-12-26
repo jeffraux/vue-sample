@@ -58,15 +58,6 @@ watch(searchText, (newValue, oldValue) => {
   }
 })
 
-// const categories = computed(() => {
-//   const allCategories = products.value.map(product => product.category)
-//   return [...new Set(allCategories)]
-// })
-
-// const filteredByCategory = computed(() => {
-//   return (category: string) => products.value.filter(product => product.category === category)
-// })
-
 let previousActiveElement: HTMLElement | null = null
 const handleClickProduct = (p: Product) => {
   previousActiveElement = document.activeElement as HTMLElement
@@ -106,9 +97,6 @@ const handleCloseStoreModal = () => {
       <div v-if="loading" class="loader">
         <VueSpinner size="20" color="white" />
       </div>
-      <!-- <div v-for="category in categories" :key="category">
-        <h4 class="category-title">{{ category }}</h4>
-      </div> -->
       <div v-if="products.length == 0" class="products-empty">No products available.</div>
       <div v-else class="products-list">
         <button
