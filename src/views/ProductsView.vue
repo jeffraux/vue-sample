@@ -9,7 +9,6 @@ import Search from '@/components/SearchInput.vue'
 import ProductTile from '@/components/Product/ProductTile.vue'
 import ProductModal from '@/components/Product/ProductModal.vue'
 import StoreModal from '@/components/Product/StoreModal.vue'
-// import Button from '@/components/ButtonBadge.vue'
 import Pagination from '@/components/DefaultPagination.vue'
 
 const searchText = useDebouncedRef('', 500)
@@ -154,7 +153,10 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
+
 .loader {
   background-color: rgba(0,0,0, 0.3);
   position: absolute;
@@ -163,38 +165,74 @@ main {
   height: 100%;
   align-items: center;
   justify-content: center;
+  left: 0;
+  top: 0;
 }
+
 .products-list-container {
-  min-height: 570px;
-  min-width: 890px;
+  min-height: 400px;
+  width: 100%;
+  padding: 0 12px;
+  box-sizing: border-box;
   position: relative;
 }
+
 .btn-product {
   padding: 0;
   margin: 0;
   border: none;
   border-radius: 4px;
+  width: 100%;
+  background: none;
 }
 .btn-product:focus {
   outline: 2px solid #2a8eff;
 }
+
 .products-header {
-  width: 250px;
+  width: 100%;
+  max-width: 340px;
+  min-width: 200px;
+  margin: 0 auto;
 }
+
 .products-list {
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 10px;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 12px;
 }
+@media (min-width: 480px) {
+  .products-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (min-width: 700px) {
+  .products-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+@media (min-width: 950px) {
+  .products-list {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (min-width: 1200px) {
+  .products-list {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
 .products-empty {
   display: flex;
-  min-height: 200px;
+  min-height: 120px;
   width: 100%;
   justify-content: center;
   align-items: center;
   font-size: 14px;
   color: #d7d7d7;
+  text-align: center;
 }
+
 .category-title {
   font-size: 14px;
   font-weight: bold;
