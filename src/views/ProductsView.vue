@@ -11,12 +11,16 @@ import ProductModal from '@/components/Product/ProductModal.vue'
 import StoreModal from '@/components/Product/StoreModal.vue'
 import Pagination from '@/components/DefaultPagination.vue'
 
-const searchText = useDebouncedRef('', 500)
+const STOCK_LEVEL_WARNING = 10
+const PAGE_SIZE = 20
+const DEFAULT_DELAY = 500
+
+const searchText = useDebouncedRef('', DEFAULT_DELAY)
 const loading = ref(false)
 const products = ref<Product[]>([])
 const productInfo = ref<Product | null>(null)
-const stockLevelWarning = ref(10)
-const pageSize = ref(20)
+const stockLevelWarning = ref(STOCK_LEVEL_WARNING)
+const pageSize = ref(PAGE_SIZE)
 const pageIndex = ref(0)
 const total = ref(0)
 const showProductModal = ref(false)

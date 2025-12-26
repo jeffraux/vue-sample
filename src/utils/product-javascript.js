@@ -1,16 +1,3 @@
-export interface Product {
-  id: number
-  title: string
-  description: string
-  discountPercentage: number
-  category: string
-  price: number
-  stock: number
-  brand: string
-  images: string[]
-  thumbnail: string
-}
-
 /**
  * Product utilities used by an e-commerce product page
  * API Source: https://dummyjson.com/products
@@ -23,7 +10,7 @@ const LOW_STOCK_THRESHOLD = 10;
  * @param {Array} products
  * @returns {Object}
  */
-export function groupProductsByCategory(products: Product[]) {
+export function groupProductsByCategory(products) {
   if (!products || !products.length) return {};
 
   return products.reduce((acc, product) => {
@@ -43,7 +30,7 @@ export function groupProductsByCategory(products: Product[]) {
  * @param {Array} products
  * @returns {number}
  */
-export function calculateTotalPrice(products: Product[]) {
+export function calculateTotalPrice(products) {
   if (!Array.isArray(products)) return 0;
 
   return products.reduce((sum, product) => {
@@ -57,7 +44,7 @@ export function calculateTotalPrice(products: Product[]) {
  * @param {number} threshold
  * @returns {Array}
  */
-export function getLowStockProducts(products: Product[], threshold = LOW_STOCK_THRESHOLD) {
+export function getLowStockProducts(products, threshold = LOW_STOCK_THRESHOLD) {
   if (!products) return [];
 
   return products.filter((product) => {
@@ -86,16 +73,15 @@ export async function fetchProducts() {
  * @param {number} delay
  * @returns {Function}
  */
-export function debounce(fn: () => void, delay: number) {
-  let timer: ReturnType<typeof setTimeout> | null = null;
+export function debounce(fn, delay) {
+  let timer = null;
 
-  return function (...args: unknown[]) {
+  return function (...args) {
     if (timer) {
       clearTimeout(timer);
     }
 
     timer = setTimeout(() => {
-      // (fn as (...args: unknown[]) => void).apply(this, args);
       fn.apply(this, args);
     }, delay);
   };
@@ -107,7 +93,7 @@ export function debounce(fn: () => void, delay: number) {
  * @param {string|number} pincode
  * @returns {Promise}
  */
-export async function checkStoreAvailability(product: Product, pincode: string) {
+export async function checkStoreAvailability(product, pincode) {
   if (!product || !pincode) {
     return null;
   }

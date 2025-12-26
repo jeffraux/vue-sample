@@ -38,8 +38,32 @@ describe('Products Page', () => {
         category: 'C',
         price: 2,
       },
+      {
+        id: 4,
+        title: 'Product D',
+        category: 'D',
+        price: 2,
+      },
     ]
     await wrapper.vm.$nextTick()
-    expect(wrapper.findAll('.product-tile')).toHaveLength(3)
+    expect(wrapper.findAll('.btn-product')).toHaveLength(4)
+  })
+  it('shows the correct amount of buttons in pagination', async () => {
+    const wrapper = mount(ProductsView)
+    // @ts-expect-error pageSize exists in ProductsView
+    wrapper.vm.pageSize = 2
+    // @ts-expect-error total exists in ProductsView
+    wrapper.vm.total = 4
+    // @ts-expect-error products exists in ProductsView
+    wrapper.vm.products = [
+      {
+        id: 1,
+        title: 'Product A',
+        category: 'A',
+        price: 0,
+      },
+    ]
+    await wrapper.vm.$nextTick()
+    expect(wrapper.findAll('.btn')).toHaveLength(3)
   })
 })
